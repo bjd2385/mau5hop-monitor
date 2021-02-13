@@ -2,7 +2,15 @@
 # Poll mau5hop.com for new autographs.
 
 _URL="${URL:-"https://mau5hop.com/"}"
-alias pullSite='curl -s $_URL | grep -iP "(SIGNED|AUTOGRAPH|AUTOGRAPHED)"'
+
+
+pullSite()
+{
+    curl -s --connect-timeout $TIMEOUT $_URL | grep -iP "(SIGNED|AUTOGRAPH|AUTOGRAPHED|INITIAL|INITIALS|SIGNATURE)"
+
+    return 0
+}
+
 
 _DELAY="${INTERVAL:-60}"
 
@@ -18,7 +26,8 @@ do
     if [ "$_items" != "$items" ]
     then
         # Send a notification to all subscriptions.
-        aws sns publish --topic-arn "$ARN" --subject "New Mau5hop Items Posted" --message "$items"
+	printf "Sending a notification due to %s\\n" "$items"
+        aws sns publish --topic-arn "$SNS_ARN" --subject "New Mau5hop Items Posted" --message "$items" | jq -c
     fi
 
     _items="$items"
