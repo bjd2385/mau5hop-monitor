@@ -6,7 +6,7 @@ _URL="${URL:-"https://mau5hop.com/"}"
 
 pullSite()
 {
-    curl -s --connect-timeout $TIMEOUT $_URL | grep -iP "(SIGNED|AUTOGRAPH|AUTOGRAPHED|INITIAL|INITIALS|SIGNATURE)"
+    curl -s --connect-timeout $TIMEOUT $_URL | grep -iP "${SEARCH}"
 
     return 0
 }
@@ -17,7 +17,8 @@ _DELAY="${INTERVAL:-60}"
 # Set this to an empty string so I always get a notification on application start (to let me know it's running correctly).
 # This should only fire if the above grep actually catches anything, however, so ensure the site has items listed.
 _items=""
-sleep "$_DELAY"
+
+aws sns publish --topic-arn "$SNS_ARN" --subject "Starting Mau5hop monitor" --message "Started Mau5hop monitor at $(date)" | jq -c
 
 while true
 do
