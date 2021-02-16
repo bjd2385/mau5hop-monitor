@@ -12,4 +12,6 @@ $ docker ps
 CONTAINER ID   IMAGE     COMMAND         CREATED         STATUS        PORTS     NAMES
 2ba15a6b1502   mau5hop   "bash app.sh"   3 seconds ago   Up 1 second             mau5hop
 ```
+**Important:** be sure to set the `SNS_ARN` in the `.env` as there is no default.
+
 I also tend to restrict the available CPU and memory to a very small space, since it's just essentially a bash script (say, `25M` and `0.2` CPUs).

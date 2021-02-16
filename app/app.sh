@@ -2,6 +2,7 @@
 # Poll mau5hop.com for new autographs.
 
 _URL="${URL:-"https://mau5hop.com/"}"
+_DELAY="${INTERVAL:-60}"
 
 
 pullSite()
@@ -12,10 +13,6 @@ pullSite()
 }
 
 
-_DELAY="${INTERVAL:-60}"
-
-# Set this to an empty string so I always get a notification on application start (to let me know it's running correctly).
-# This should only fire if the above grep actually catches anything, however, so ensure the site has items listed.
 _items=""
 
 aws sns publish --topic-arn "$SNS_ARN" --subject "Starting Mau5hop monitor" --message "Started Mau5hop monitor at $(date)" | jq -c
@@ -27,7 +24,7 @@ do
     if [ "$_items" != "$items" ]
     then
         # Send a notification to all subscriptions.
-	printf "Sending a notification due to %s\\n" "$items"
+	printf "%s: Sending a notification due to %s\\n" "$(date)" "$items"
         aws sns publish --topic-arn "$SNS_ARN" --subject "New Mau5hop Items Posted" --message "$items" | jq -c
     fi
 
